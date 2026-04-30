@@ -8,22 +8,19 @@ int main() {
 
     if (pid == 0) {
         // CHILD: запускаем программу
-        execlp("fakecmd", "fakecmd", NULL);
+        execlp("ls", "ls", NULL);  // используем команду ls
 
         // если ошибка
         perror("exec failed");
         exit(1);
-    } 
-    else if (pid > 0) {
+    } else if (pid > 0) {
         // PARENT: ждём child
         int status;
         waitpid(pid, &status, 0);
-
         if (WIFEXITED(status)) {
             printf("Child exited with code: %d\n", WEXITSTATUS(status));
         }
-    } 
-    else {
+    } else {
         perror("fork failed");
         return 1;
     }
