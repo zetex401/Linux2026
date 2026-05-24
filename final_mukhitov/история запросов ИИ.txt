@@ -1,0 +1,1209 @@
+Финальный проект: Linux FS AI Agent
+Python-агент с function calling для диагностики Linux
+Дедлайн: 25 мая 2026, 23:59 (UTC+5). Коммит в GitHub.
+
+Штрафы: ≤3 дня = −20%, >3 дней = 0 баллов
+
+Защита: live demo + устная часть (5–7 мин)
+
+1. Описание
+Вы создаёте AI-агент: Python-программу, которая принимает запрос на естественном языке, вызывает инструменты (tools) для работы с файловой системой и системными данными, и возвращает осмысленный ответ.
+
+База: шаблон agent_template.py с лабы (5 tools). Ваша задача: добавить ≥2 новых tools + ≥1 системный + ≥1 расширенный + Telegram-интеграцию.
+
+⚠️ Сдать шаблон без изменений = 0 баллов.
+
+2. Требования
+Обязательное ядро
+Python-агент с function calling через google-genai SDK
+Telegram-интеграция обязательна — бот принимает сообщения и отвечает в чат
+≥7 tools в сумме (5 из шаблона + ≥2 новых)
+≥1 системный tool: journalctl, /proc, ps, lsblk, uptime, free
+≥1 расширенный tool: аналитика сверх базовых FS-операций (бэкап, diff, аудит, поиск аномалий)
+Agent loop: модель → function_call → выполнение → результат → модель
+Обработка ошибок: retry при 429/503, try/except в tools
+Примеры новых tools
+Категория	Примеры
+Файловая система	search_in_file, list_dir, file_permissions, count_lines
+Системные	system_logs (journalctl), process_list (ps), memory_info (free)
+Расширенные	create_backup, compare_files, find_large_files
+💡 В шаблоне subprocess запрещён (безопасность лабы). В проекте — разрешён, это ваша ответственность.
+
+Май 2026
+Страница 1 из 3
+Операционные системы — Финальный проект
+Дедлайн: 25 мая
+С. Аубакиров, PhD, Май 2026
+3. Критерии оценки
+#	Критерий	Баллы
+1	Агент запускается и вызывает tools	25
+2	≥7 tools (≥2 сверх шаблона)	15
+3	≥1 системный tool (journalctl, /proc, ps)	10
+4	≥1 расширенный tool (аналитический / аудит)	10
+5	Telegram-интеграция (бот работает)	15
+6	Сценарий демо нетривиален	10
+7	Код читаем: README, комментарии, ошибки	15
+Итого	100
+Пояснения
+К1 (25): Полный agent loop на демо — запрос → function_call → tool → ответ.
+
+К2 (15): Переименовать tool ≠ новый tool. Каждый tool = отдельная функция с docstring.
+
+К3 (10): Минимум 1 tool к системным данным: journalctl, /proc/cpuinfo, ps aux.
+
+К4 (10): Минимум 1 аналитический tool: find_large_files, compare_files, security_audit.
+
+К5 (15): Telegram-бот работает. Демо через Telegram. CLI = fallback.
+
+К6 (10): «Найди .py файлы» — тривиально. «Проверь ошибки в логах SSH за час» — нетривиально.
+
+К7 (15): README.md + комментарии + try/except в каждом tool.
+
+4. Формат сдачи
+Структура в GitHub
+final/
+├── README.md         ← описание, инструкция запуска
+├── agent.py          ← ваш агент
+└── demo.mp4/.gif     ← видео демо (≤2 мин)
+README.md (обязательно)
+Название проекта
+Таблица реализованных tools
+Как запустить: export G_API_KEY=... && python3 agent.py
+Примеры запросов для демо
+Май 2026
+Страница 2 из 3
+Операционные системы — Финальный проект
+Дедлайн: 25 мая
+С. Аубакиров, PhD, Май 2026
+5. Защита
+Параметр	Значение
+Формат	Live demo + устная часть
+Время	5–7 минут на студента
+AI	Разрешён. Chat history обязательна
+Среда	WSL2 + Ubuntu 22.04
+Порядок
+Запуск через Telegram (1 мин): покажите бота, отправьте первое сообщение
+Демо (2–3 мин): 3–5 запросов через Telegram, показывающих tools
+Вопросы (2–3 мин): function calling? agent loop? расширенный tool? что при 429?
+6. Напоминания
+🔑 Не коммитьте API-ключ! Используйте os.environ["G_API_KEY"]
+
+Дедлайн: 25 мая, 23:59 (UTC+5)
+Опоздание: ≤3 дня = −20%, >3 дней = 0
+Шаблон as-is = 0 баллов
+Помощь AI: разрешена, chat history сдаётся
+🚀 Это ваш первый AI-агент. Всё, что вы учили — bash, файловые системы, процессы, логирование — теперь инструменты в руках AI. Emergence. использую эту ниформацию обьясни про все детали проекта, дай понять какими командами опереировать и дай информацию про большую часть инструментов, дай информацию как добавить погоду и время в телеграм бота, дай информацию про интеграцию API ключей и токенов в телеграм бота, дай информацию об этих инструментах find_files | Поиск файлов по шаблону |
+| read_file | Чтение файла |
+| file_info | Информация о файле |
+| disk_usage | Использование диска |
+| create_file | Создание файла |
+| list_dir | Просмотр директории |
+| search_in_file | Поиск текста в файле |
+| process_list | Список процессов Linux |
+| memory_info | Использование RAM |
+| system_uptime | Время работы системы |
+| find_large_files | Поиск больших файлов |
+| create_backup | Создание backup файла |
+| compare_files | Сравнение файлов |
+| weather_now | Погода по городу |
+| world_time | Время по городу |
+
+Я разберу проект как структуру для сдачи: что именно должно работать, какие команды использовать, как объяснять tools на защите, и как безопасно подключать API-ключи для Gemini, Telegram, погоды и времени.
+
+Думал на протяжении нескольких секунд
+
+Отвечу как преподаватель по операционным системам и Python-интеграциям, проверяющий такие final projects на защите.
+
+Суть проекта
+
+Ты делаешь AI-агента для диагностики Linux.
+
+Он должен принимать обычный текст, например:
+
+Найди большие файлы в папке проекта
+Покажи процессы Python
+Сделай backup файла README.md
+Сравни два файла
+Покажи погоду в Алматы
+Покажи время в Токио
+
+Дальше агент сам должен понять, какой tool вызвать, выполнить функцию и вернуть нормальный ответ пользователю.
+
+Главное:
+
+Пользователь → Telegram → agent.py → Gemini function calling → tool → результат → Gemini → ответ в Telegram
+
+CLI можно оставить как запасной вариант, но основное демо лучше делать через Telegram.
+
+1. Структура проекта
+
+На GitHub должно быть так:
+
+final/
+├── README.md
+├── agent.py
+└── demo.mp4 или demo.gif
+
+README.md — описание проекта, команды запуска, таблица tools, примеры запросов.
+
+agent.py — весь код агента.
+
+demo.mp4/.gif — короткое видео до 2 минут, где видно, что бот работает.
+
+2. Команды, которыми нужно оперировать
+Перейти в папку проекта
+cd ~/final
+
+или если проект лежит в другой папке:
+
+cd ~/Desktop/final
+
+Проверить файлы:
+
+ls
+
+Должно быть:
+
+README.md  agent.py
+Открыть README через nano
+nano README.md
+
+Сохранить:
+
+Ctrl + O
+Enter
+Ctrl + X
+Открыть agent.py через nano
+nano agent.py
+Запустить агента
+python3 agent.py
+Установить зависимости
+pip install google-genai python-telegram-bot requests
+
+Если pip не работает:
+
+python3 -m pip install google-genai python-telegram-bot requests
+3. API-ключи и токены
+
+Нельзя писать ключи прямо в коде.
+
+Плохо:
+
+G_API_KEY = "AIza..."
+TELEGRAM_BOT_TOKEN = "123456..."
+
+Правильно:
+
+import os
+
+G_API_KEY = os.environ["G_API_KEY"]
+TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+Как задать ключи в терминале
+export G_API_KEY="твой_google_gemini_api_key"
+export TELEGRAM_BOT_TOKEN="твой_telegram_bot_token"
+export WEATHER_API_KEY="твой_weather_api_key"
+
+После этого запуск:
+
+python3 agent.py
+
+Одной строкой:
+
+export G_API_KEY="..." && export TELEGRAM_BOT_TOKEN="..." && export WEATHER_API_KEY="..." && python3 agent.py
+Где взять Telegram token
+В Telegram открыть @BotFather
+Написать:
+/newbot
+Указать имя бота
+Указать username, который заканчивается на bot
+BotFather даст токен
+Этот токен вставить в терминал:
+export TELEGRAM_BOT_TOKEN="сюда_токен"
+4. Как должен работать agent loop
+
+На защите можно объяснить так:
+
+Agent loop — это цикл, где модель сначала получает запрос пользователя,
+потом решает, какой function/tool нужно вызвать,
+Python выполняет эту функцию,
+результат возвращается обратно модели,
+и модель формирует финальный ответ пользователю.
+
+Пример:
+
+Пользователь: Покажи большие файлы в папке /home/user
+
+Gemini выбирает tool: find_large_files
+Python выполняет поиск
+Tool возвращает список файлов
+Gemini объясняет результат нормальным языком
+Telegram отправляет ответ пользователю
+5. Таблица tools
+
+В README можно вставить такую таблицу:
+
+| Tool | Назначение |
+|---|---|
+| find_files | Поиск файлов по шаблону |
+| read_file | Чтение файла |
+| file_info | Информация о файле |
+| disk_usage | Использование диска |
+| create_file | Создание файла |
+| list_dir | Просмотр директории |
+| search_in_file | Поиск текста в файле |
+| process_list | Список процессов Linux |
+| memory_info | Использование RAM |
+| system_uptime | Время работы системы |
+| find_large_files | Поиск больших файлов |
+| create_backup | Создание backup файла |
+| compare_files | Сравнение файлов |
+| weather_now | Погода по городу |
+| world_time | Время по городу |
+
+У тебя получается 15 tools, то есть больше минимума. Требуется минимум 7.
+
+6. Объяснение каждого tool
+find_files
+
+Ищет файлы по шаблону.
+
+Пример запроса:
+
+Найди все .py файлы в текущей папке
+
+Что делает:
+
+Ищет файлы по имени, например *.py, *.txt, README*
+read_file
+
+Читает содержимое файла.
+
+Пример:
+
+Прочитай README.md
+
+Важно: лучше ограничить размер чтения, чтобы бот не пытался отправить огромный файл.
+
+file_info
+
+Показывает информацию о файле:
+
+размер
+путь
+дата изменения
+права доступа
+это файл или папка
+
+Пример:
+
+Покажи информацию о файле agent.py
+disk_usage
+
+Показывает использование диска.
+
+Пример:
+
+Сколько места занимает текущая папка?
+
+Можно использовать через Python:
+
+shutil.disk_usage(path)
+
+Или через Linux-команду:
+
+du -sh .
+df -h
+create_file
+
+Создаёт файл с текстом.
+
+Пример:
+
+Создай файл notes.txt с текстом Hello Linux
+
+Важно: добавить try/except, чтобы ошибка не ломала бота.
+
+list_dir
+
+Показывает содержимое директории.
+
+Пример:
+
+Покажи файлы в текущей папке
+
+Аналог Linux-команды:
+
+ls -la
+search_in_file
+
+Ищет текст внутри файла.
+
+Пример:
+
+Найди слово error в файле logs.txt
+
+Полезно для демо:
+
+Найди все строки с import в agent.py
+process_list
+
+Системный tool.
+
+Показывает процессы Linux.
+
+Пример:
+
+Покажи процессы Python
+
+Можно использовать:
+
+ps aux
+
+Или через Python subprocess.
+
+На защите это закрывает требование:
+
+≥1 системный tool
+memory_info
+
+Системный tool.
+
+Показывает RAM.
+
+Пример:
+
+Сколько оперативной памяти используется?
+
+Linux-команда:
+
+free -h
+system_uptime
+
+Системный tool.
+
+Показывает, сколько работает система.
+
+Пример:
+
+Сколько времени работает Linux?
+
+Linux-команда:
+
+uptime
+find_large_files
+
+Расширенный tool.
+
+Ищет большие файлы.
+
+Пример:
+
+Найди самые большие файлы в папке проекта
+
+Это хороший tool для защиты, потому что он аналитический, не просто читает файл.
+
+На защите можно сказать:
+
+find_large_files относится к advanced tools, потому что он анализирует файловую систему и помогает найти потенциальные проблемы с диском.
+create_backup
+
+Расширенный tool.
+
+Создаёт копию файла.
+
+Пример:
+
+Сделай backup файла README.md
+
+Результат:
+
+README.md.backup
+
+или:
+
+README_2026-05-23_2350.backup
+
+На защите можно сказать:
+
+Этот tool полезен перед изменением файлов, потому что сохраняет резервную копию.
+compare_files
+
+Расширенный tool.
+
+Сравнивает два файла и показывает отличия.
+
+Пример:
+
+Сравни README.md и README_old.md
+
+Можно использовать Python-библиотеку:
+
+difflib
+
+Это тоже хороший advanced tool.
+
+weather_now
+
+Дополнительный API tool.
+
+Показывает погоду по городу.
+
+Пример:
+
+Покажи погоду в Алматы
+
+Для этого можно использовать внешний API, например OpenWeather.
+
+Переменная:
+
+export WEATHER_API_KEY="твой_ключ"
+
+В коде:
+
+WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY")
+
+Если ключа нет, tool должен вернуть:
+
+WEATHER_API_KEY не найден. Укажите ключ через export WEATHER_API_KEY=...
+world_time
+
+Дополнительный API tool.
+
+Показывает время по городу.
+
+Пример:
+
+Сколько времени в Токио?
+
+Можно сделать проще: использовать словарь городов и timezone.
+
+Пример:
+
+CITY_TIMEZONES = {
+    "almaty": "Asia/Almaty",
+    "tokyo": "Asia/Tokyo",
+    "london": "Europe/London",
+    "new york": "America/New_York"
+}
+
+И библиотеку:
+
+from zoneinfo import ZoneInfo
+from datetime import datetime
+7. Telegram-интеграция
+
+Логика такая:
+
+Пользователь пишет боту
+↓
+Telegram handler принимает текст
+↓
+Текст отправляется в Gemini agent loop
+↓
+Gemini вызывает нужный tool
+↓
+Ответ возвращается в Telegram
+
+Минимальный запуск Telegram-бота:
+
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+
+async def start(update, context):
+    await update.message.reply_text("Linux FS AI Agent запущен. Напишите команду.")
+
+async def handle_message(update, context):
+    user_text = update.message.text
+    answer = run_agent(user_text)
+    await update.message.reply_text(answer)
+
+app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+app.add_handler(CommandHandler("start", start))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+app.run_polling()
+8. Что обязательно должно быть в tools
+
+Каждый tool должен иметь:
+
+def tool_name(...):
+    """Описание tool."""
+    try:
+        ...
+        return result
+    except Exception as e:
+        return f"Ошибка: {e}"
+
+Это важно, потому что в критериях есть:
+
+try/except в каждом tool
+9. Retry при 429/503
+
+На защите могут спросить:
+
+Что происходит, если Gemini API временно недоступен?
+
+Ответ:
+
+В коде реализован retry. Если API возвращает 429 или 503, агент ждёт несколько секунд и повторяет запрос. Это защищает от временных ошибок лимита или перегрузки сервиса.
+
+Пример логики:
+
+import time
+
+for attempt in range(3):
+    try:
+        response = client.models.generate_content(...)
+        return response
+    except Exception as e:
+        if "429" in str(e) or "503" in str(e):
+            time.sleep(2)
+            continue
+        raise e
+10. Хорошие запросы для демо
+
+Лучше не показывать слишком простое:
+
+Найди .py файлы
+
+Лучше использовать такие:
+
+Проверь, какие Python-файлы есть в проекте, и покажи информацию о самом большом из них
+Найди в agent.py все строки, где используется os.environ
+Покажи список процессов Python в системе
+Покажи использование оперативной памяти и время работы системы
+Сделай backup README.md, потом покажи информацию о созданном backup-файле
+Сравни README.md и README_backup.md
+Покажи погоду в Алматы и текущее время в Токио
+11. Что говорить на защите
+
+Коротко:
+
+Мой проект — это Linux FS AI Agent на Python.
+Он использует Google GenAI SDK и function calling.
+Пользователь пишет запрос в Telegram, модель выбирает нужный tool,
+Python выполняет функцию и возвращает результат обратно модели.
+После этого модель формирует понятный ответ пользователю.
+
+Про tools:
+
+Всего реализовано 15 tools.
+Есть базовые файловые tools: read_file, find_files, list_dir, file_info.
+Есть системные tools: process_list, memory_info, system_uptime.
+Есть advanced tools: find_large_files, create_backup, compare_files.
+Также добавлены API tools: weather_now и world_time.
+
+Про безопасность:
+
+API-ключи не хранятся в коде. Они передаются через переменные окружения:
+G_API_KEY, TELEGRAM_BOT_TOKEN и WEATHER_API_KEY.
+
+Про ошибки:
+
+В каждом tool есть try/except.
+Для ошибок 429 и 503 используется retry.
+12. Самая важная команда для README
+cd final
+pip install google-genai python-telegram-bot requests
+export G_API_KEY="your_gemini_api_key"
+export TELEGRAM_BOT_TOKEN="your_telegram_bot_token"
+export WEATHER_API_KEY="your_weather_api_key"
+python3 agent.py
+
+Это можно прямо вставить в README.
+
+Думал на протяжении пары секунд
+
+Отвечу как преподаватель по Linux/OS project defense.
+
+Тебе теперь нужно думать не как про Python Telegram-бота, а как про Linux diagnostic agent на Bash + C + curl + jq.
+
+Главная проблема
+
+Твой старый бот на Python может работать, но по этому комментарию его не примут, потому что требуют:
+
+agent.sh        ← Bash-оркестратор
+get_proc_info.c ← C-программа для чтения /proc
+jq              ← сбор JSON
+curl            ← запрос к Gemini API
+README.md       ← инструкция
+Команды, которыми ты должен оперировать
+1. Создать структуру проекта
+mkdir -p final
+cd final
+touch agent.sh
+touch get_proc_info.c
+touch README.md
+
+Проверить:
+
+ls -la
+2. Открыть файлы через nano
+nano agent.sh
+nano get_proc_info.c
+nano README.md
+3. Сделать Bash-скрипт исполняемым
+chmod +x agent.sh
+4. Скомпилировать C-программу
+gcc get_proc_info.c -o get_proc_info
+
+Проверить запуск:
+
+./get_proc_info
+5. Установить нужные Linux-зависимости
+sudo apt update
+sudo apt install -y gcc jq curl
+
+Проверить:
+
+gcc --version
+jq --version
+curl --version
+6. Добавить Gemini API key
+export G_API_KEY="твой_ключ_gemini"
+
+Проверить:
+
+echo $G_API_KEY
+7. Запустить проект
+./agent.sh
+
+или:
+
+bash agent.sh
+Какие команды должен использовать сам агент
+
+Внутри agent.sh должны быть Linux-команды:
+
+Диск
+df -h
+
+Показывает свободное и занятое место на диске.
+
+Процессы
+ps aux
+
+Показывает процессы в системе.
+
+Можно ограничить:
+
+ps aux --sort=-%mem | head -10
+Логи
+journalctl -n 20 --no-pager
+
+Показывает последние 20 системных логов.
+
+Для ошибок:
+
+journalctl -p err -n 20 --no-pager
+Память
+free -h
+
+Показывает RAM.
+
+Uptime
+uptime
+
+Показывает, сколько работает система и load average.
+
+Блочные устройства
+lsblk
+
+Показывает диски и разделы.
+
+Информация из /proc
+
+Через Bash:
+
+cat /proc/loadavg
+cat /proc/meminfo
+cat /proc/cpuinfo
+
+Но по требованию лучше часть сделать через C:
+
+open("/proc/loadavg", O_RDONLY)
+read(...)
+Команды для демо
+
+На защите лучше показывать такие сценарии:
+
+Проверь состояние системы: диск, память, процессы и последние ошибки journalctl
+Найди процессы, которые больше всего используют память
+Покажи последние системные ошибки и предложи команду для диагностики
+Проверь нагрузку системы через /proc/loadavg
+Собери системный отчет и отправь его в Gemini для анализа
+Что должен делать agent.sh
+
+Логика:
+
+1. Спросить пользователя, что проверить
+2. Собрать системный контекст:
+   df -h
+   free -h
+   ps aux
+   journalctl
+   ./get_proc_info
+3. Собрать JSON через jq
+4. Отправить JSON в Gemini через curl
+5. Получить ответ
+6. Вывести ответ в терминал
+7. Спросить:
+   Выполнить рекомендованную команду? [Y/n]
+Проблема с погодой в боте
+
+Если бот неправильно показывает погоду, причины обычно такие:
+
+1. Неправильный город
+
+Например пользователь пишет:
+
+Алматы
+
+А API ищет:
+
+Almaty
+
+Лучше внутри бота сделать словарь:
+
+Алматы → Almaty
+Астана → Astana
+Шымкент → Shymkent
+Токио → Tokyo
+Лондон → London
+2. API вернул другой город
+
+Некоторые weather API могут найти не тот город, особенно если город есть в разных странах.
+
+Например:
+
+Moscow
+Paris
+London
+
+могут иметь несколько совпадений.
+
+Лучше указывать страну:
+
+Almaty,KZ
+Astana,KZ
+Shymkent,KZ
+3. Неправильные единицы температуры
+
+API может отдавать температуру в Kelvin.
+
+Например:
+
+295.15 K
+
+Это примерно:
+
+22°C
+
+Для Celsius нужно добавить параметр:
+
+units=metric
+4. Неправильный язык
+
+Чтобы описание погоды было на русском:
+
+lang=ru
+5. Неправильный API key
+
+Если ключ неправильный или не экспортирован:
+
+echo $WEATHER_API_KEY
+
+Если пусто — бот не видит ключ.
+
+Нужно:
+
+export WEATHER_API_KEY="твой_weather_key"
+6. Бот берёт старые данные
+
+Если в коде есть кеширование, бот может показывать старую погоду.
+
+Решение: каждый запрос должен заново обращаться к API.
+
+7. Ошибка timezone
+
+Погода может быть правильной, но время рассвета/заката неправильное, если бот не учитывает timezone города.
+
+Для времени лучше использовать отдельный timezone tool, например:
+
+Asia/Almaty
+Asia/Tokyo
+Europe/London
+America/New_York
+Правильный weather-запрос
+
+Пример для OpenWeather:
+
+curl "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru"
+
+Через jq:
+
+curl -s "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru" | jq
+
+Достать температуру:
+
+curl -s "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru" | jq '.main.temp'
+Главное
+
+Если преподаватель требует Bash, C, jq и curl — не делай основной проект на Python.
+
+Python-бот можно оставить отдельно, но для сдачи лучше структура:
+
+final/
+├── agent.sh
+├── get_proc_info.c
+├── get_proc_info
+├── README.md
+└── demo.mp4
+
+Команда запуска:
+
+cd final
+gcc get_proc_info.c -o get_proc_info
+chmod +x agent.sh
+export G_API_KEY="your_key"
+export WEATHER_API_KEY="your_key"
+./agent.sh
+а если я интегрирую онлайн погоду через API?
+
+Да, можно интегрировать онлайн-погоду через API, но как дополнительную функцию, а не как замену системным Linux-tools.
+
+Для твоего проекта погода через API не закрывает главные требования ОС:
+
+df, ps, journalctl, /proc, C-программа, jq, curl
+
+Но она может быть хорошим дополнительным tool для демо.
+
+Как правильно сделать в Bash
+
+Через OpenWeather API:
+
+export WEATHER_API_KEY="твой_ключ"
+
+Запрос:
+
+curl -s "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru" | jq
+
+Температура:
+
+curl -s "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru" | jq '.main.temp'
+
+Описание:
+
+curl -s "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru" | jq -r '.weather[0].description'
+Почему погода может показываться неправильно
+
+Чаще всего из-за этого:
+
+1. Не указан код страны: нужно Almaty,KZ, а не просто Almaty
+2. Нет units=metric — тогда температура может быть в Kelvin
+3. Нет lang=ru — описание будет не на русском
+4. Неверный WEATHER_API_KEY
+5. API нашёл другой город с похожим названием
+В README можно написать так
+### Weather API
+
+The project includes an optional weather tool using OpenWeather API.
+
+Example:
+
+```bash
+export WEATHER_API_KEY="your_openweather_key"
+curl -s "https://api.openweathermap.org/data/2.5/weather?q=Almaty,KZ&appid=$WEATHER_API_KEY&units=metric&lang=ru" | jq
+
+This tool is optional and does not replace Linux system diagnostics tools.
+
+
+Главное: на защите сначала показывай **Linux-диагностику**, потом уже погоду как дополнительную API-интеграцию.
+RF__project_spec (1).html
+Файл
+Понял теперь дай информацию по readme вкраци по заданию
+
+Вкратце README для этого проекта должен содержать 4 главные вещи из задания: описание проекта, список tools, запуск и примеры запросов. Это прямо указано в спецификации проекта.
+
+Структура README примерно такая:
+
+# Linux FS AI Agent
+
+AI-агент для диагностики Linux с function calling через Google Gemini API и Telegram-интеграцией.
+
+## Возможности
+
+- Работа с файловой системой Linux
+- Анализ процессов и памяти
+- Просмотр системных логов
+- Поиск больших файлов
+- Backup и сравнение файлов
+- Погода и мировое время
+- Telegram-бот
+
+## Реализованные tools
+
+| Tool | Описание |
+|---|---|
+| find_files | Поиск файлов |
+| read_file | Чтение файла |
+| list_dir | Просмотр директории |
+| process_list | Процессы Linux |
+| memory_info | Использование RAM |
+| system_logs | Логи journalctl |
+| find_large_files | Поиск больших файлов |
+| create_backup | Backup файла |
+| compare_files | Сравнение файлов |
+| weather_now | Погода |
+| world_time | Время |
+
+## Требования
+
+- Ubuntu 22.04
+- Python 3
+- Telegram Bot Token
+- Gemini API Key
+
+## Установка зависимостей
+
+```bash
+pip install google-genai python-telegram-bot requests
+Запуск
+export G_API_KEY="your_gemini_api_key"
+
+export TELEGRAM_BOT_TOKEN="your_telegram_token"
+
+export WEATHER_API_KEY="your_weather_key"
+
+python3 agent.py
+Примеры запросов
+Покажи процессы Python
+Найди большие файлы
+Покажи использование RAM
+Проверь последние ошибки journalctl
+Сделай backup README.md
+Покажи погоду в Алматы
+Покажи время в Токио
+Обработка ошибок
+try/except в каждом tool
+retry при 429/503
+API keys через environment variables
+
+Что важно для преподавателя:
+
+```text
+README.md + инструкция запуска + tools + примеры запросов
+
+Это отдельно указано в критериях оценки.
+
+
+
+
+
+
+
+
+@ai_edu_kaznu_2026_bot
+
+1. Создай скрипт agent.sh.
+2. Напиши на C небольшую программу (например, get_proc_info.c), которая через open("/proc/loadavg", O_RDONLY) читает нагрузку системы и выводит её. Скомпилируй её.
+3. Внутри agent.sh собери данные через df -h, journalctl -n 20 и вызови свою C-программу.
+4. В том же agent.sh собери эти данные в JSON строку с помощью jq.
+5. Отправь этот JSON через команду curl -X POST ... на API Gemini.
+6. Получи ответ, распарси его через jq, выведи на экран и спроси пользователя через read -p "Выполнить команду? [Y/n]".
+Код на Python принят не будет. Если не знаешь, как реализовать конкретный шаг (например, как сделать запрос через curl), напиши, и я дам тебе пример.
+Давай пример, код на py у меня есть мне же просто его нужно переформировать для убунту
+Арсений, концептуально — да, логика (сбор данных → отправка → анализ ответа → действие) остаётся той же. Но технически это не просто «переформатирование». В Python за тебя всё делала библиотека google-genai. В Bash тебе придётся вручную собирать HTTP-запросы и парсить JSON.
+Вот базовый каркас того, как это должно выглядеть в рамках нашего стека.
+1. Системный сбор данных на C
+
+Вместо модулей os в Python, ты пишешь небольшие утилиты на C, которые читают ядро напрямую.
+Создай файл sys_monitor.c:
+
+C
+
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    char buffer[256];
+    // Системный вызов open для чтения из виртуальной ФС
+    int fd = open("/proc/loadavg", O_RDONLY);
+    if (fd < 0) {
+        perror("Error opening /proc/loadavg");
+        return 1;
+    }
+    int bytes_read = read(fd, buffer, sizeof(buffer) - 1);
+    buffer[bytes_read] = '\0';
+    printf("Load Average: %s", buffer);
+    close(fd);
+    return 0;
+}
+
+Скомпилируй его: gcc sys_monitor.c -o sys_monitor
+2. Скрипт-оркестратор на Bash (agent.sh)
+
+Здесь ты собираешь данные от C-программы и стандартных утилит, упаковываешь их в JSON через jq и отправляешь через curl.
+Bash
+
+
+#!/bin/bash
+
+# 1. Собираем системный контекст
+SYS_LOAD=$(./sys_monitor)
+DISK_USAGE=$(df -h / | tail -n 1)
+USER_QUERY="Почему у меня тормозит система?"
+
+# 2. Безопасно формируем JSON-запрос с помощью jq (чтобы избежать проблем с кавычками)
+JSON_PAYLOAD=$(jq -n \
+  --arg prompt "$USER_QUERY" \
+  --arg ctx "Контекст: $SYS_LOAD | Диск: $DISK_USAGE" \
+  '{
+    "contents": [{
+      "parts": [{"text": ($prompt + "\n" + $ctx)}]
+    }]
+  }')
+
+# 3. Отправляем запрос через curl
+API_KEY="ТВОЙ_КЛЮЧ"
+URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$API_KEY"
+
+echo "⏳ Запрос к Gemini API..."
+RESPONSE=$(curl -s -X POST "$URL" -H 'Content-Type: application/json' -d "$JSON_PAYLOAD")
+
+# 4. Извлекаем ответ (текст) из огромного JSON ответа
+ANSWER=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
+
+echo -e "\n🤖 Ответ агента:\n$ANSWER"
+
+# 5. Интерактивность (Обязательное требование)
+read -p "Выполнить предложенную команду очистки/диагностики? [Y/n] " choice
+if [[ "$choice" == "Y" || "$choice" == "y" ]]; then
+    echo "Выполняю..."
+    # Здесь логика выполнения извлеченной команды
+fi
+Как перенести твой Tool Calling?
+
+В Python ты передавал tools=[tool_config]. В curl ты тоже можешь передать массив tools в JSON, но парсить вызов функции (Function Call) в Bash придётся руками:
+1. Ты проверяешь через jq, есть ли в ответе поле functionCall:
+TOOL_NAME=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].functionCall.name')
+2. Если TOOL_NAME не null, ты извлекаешь аргументы (тоже через jq).
+3. Запускаешь нужную bash-команду или C-утилиту через case "$TOOL_NAME" in ... esac.
+Твоя задача: написать скрипт agent.sh, который интегрирует эти шаги в единый процесс. Начни с малого: добейся успешного curl запроса с отправкой контекста и получением ответа в терминале.
+ну тут же вот скинули нам задание такое
+Арсений, признаю ошибку. Я опирался на базовый силлабус курса, но, как вижу по прикреплённому документу, преподаватель выдал вам обновлённую спецификацию именно под Python-агента с Telegram-ботом.
+Беру свои слова назад насчёт Bash и C. Твой код на Python полностью легитимен в рамках этого задания.
+Давай пересмотрим твой проект final_project_mukhitov.py по актуальным критериям из этого документа:
+Твоя текущая оценка: ~75-80% готовности
+Что сделано ОТЛИЧНО (соответствует требованиям):
+✅ К1 (Агент работает): Реализован полный цикл function calling через google-genai.
+✅ К2 (Количество tools): У тебя целых 15 инструментов! Это с запасом перекрывает требование "≥7 tools".
+✅ К3 (Системный tool): У тебя есть process_list (ps aux), memory_info (free) и system_uptime. Требование выполнено.
+✅ К4 (Расширенный tool): find_large_files, compare_files, create_backup — отличные аналитические инструменты.
+✅ К5 (Telegram-интеграция): Код для бота через python-telegram-bot написан корректно (используется fallback на CLI, если токена нет). Везде стоят try/except для защиты от падений.
+Что НЕ ХВАТАЕТ для 100 баллов (Твои недочёты):
+Внимательно посмотри на Раздел 4 ("Формат сдачи") в документе. Твоя структура репозитория сейчас нарушает эти правила.
+1. ❌ Отсутствует папка final/
+Твой скрипт сейчас лежит в корне репозитория (Linux2026/final_project_mukhitov.py). Тебе обязательно нужно создать папку final/ и переместить код туда.
+2. ❌ Нет файла README.md
+По критерию К7 это обязательно. Тебе нужно создать файл final/README.md. В нём должны быть:
+  • Название проекта.
+  • Таблица реализованных инструментов (перечисли свои 15 tools кратко).
+  • Инструкция по запуску: export G_API_KEY="..." && python3 ...
+  • Примеры запросов для твоего демо.
+3. ❌ Нет демо-видео
+В структуре указан файл demo.mp4 или .gif (до 2 минут). Обязательно запиши экран, как ты запускаешь бота и делаешь 3-5 запросов в Telegram, показывая работу инструментов.
+Твой план действий сейчас:
+
+1. На компьютере: mkdir final
+2. mv final_project_mukhitov.py final/agent.py (советую переименовать в agent.py, как в ТЗ).
+3. Создай final/README.md и напиши документацию.
+4. Запиши короткое видео работы в Telegram и положи туда же (final/demo.mp4).
+5. Запуши всё это: git add final/, git commit, git push.
+Код хороший, осталась только бюрократия с оформлением репозитория. Сделай это, и проект будет готов на максимальный балл.
+дай мне пожалуйста команды для отработки инструментов в боте чтобы активировать командами его
+Арсений, главное преимущество твоего AI-агента в том, что ему не нужны строгие команды со слешем (вроде /memory или /disk). Он понимает естественный язык и сам решает, какую функцию вызвать.
+Для демо-видео и файла README.md я подготовил список естественных запросов, которые гарантированно активируют твои инструменты. Скопируй их и отправляй боту в Telegram:
+1. Системный мониторинг (System tools)
+
+• Запрос: Как долго работает сервер и сколько сейчас свободной оперативной памяти?
+Активирует: system_uptime + memory_info
+• Запрос: Покажи системные процессы. Есть ли среди них те, что связаны с python?
+Активирует: process_list (с аргументом keyword="python")
+• Запрос: Сколько свободного места осталось на диске?
+Активирует: disk_usage
+2. Работа с файловой системой (FS tools)
+
+• Запрос: Покажи содержимое текущей папки.
+Активирует: list_dir
+• Запрос: Дай информацию о файле README.md и прочитай его.
+Активирует: file_info + read_file
+• Запрос: Создай новый файл hello.txt с текстом "Тестовый запуск агента".
+Активирует: create_file
+3. Расширенный аудит и аналитика (Advanced tools)
+
+• Запрос: Найди все большие файлы размером больше 10 МБ в текущей директории.
+Активирует: find_large_files
+• Запрос: Сделай бэкап файла hello.txt.
+Активирует: create_backup
+• Запрос: Сравни исходный файл hello.txt и его бэкап hello.txt.backup. Есть ли разница?
+Активирует: compare_files
+• Запрос: Найди слово "error" внутри файла access.log.
+Активирует: search_in_file
+4. Внешние интеграции (Extras)
+
+• Запрос: Подскажи точное время и погоду в Алматы прямо сейчас.
+Активирует: world_time + weather_now
+Совет для защиты: В README.md обязательно добавь раздел "Примеры запросов" и вставь туда 4-5 самых интересных сценариев из этого списка (особенно расширенные). На видео запиши, как ты отправляешь эти запросы в Telegram, и как бот присылает тебе осмысленный ответ с собранными данными.
+
+Работа с файловой системой Linux
+Покажи содержимое текущей папки
+Покажи содержимое папки /home
+
+Анализ процессов и оперативной памяти
+Покажи процессы Python
+Покажи использование оперативной памяти
+
+Получение uptime системы
+Покажи uptime системы
+
+Поиск больших файлов
+Найди файлы больше 10 MB в /home
+
+Создание backup файлов
+Сделай backup файла README.md
+
+Сравнение файлов
+Сравни README.md и README.md.backup
+
+Просмотр директорий
+Покажи содержимое папки /etc
+
+Поиск файлов по шаблону
+Найди все .py файлы в /home
+
+Получение погоды
+Покажи погоду в Алматы
+
+Получение мирового времени
+Покажи время в Токио
+
+Telegram-бот
+Отправь любое сообщение боту в Telegram:
+Привет
+или
+Покажи процессы Python
+
+Agent loop через Gemini Function Calling
+Покажи процессы Python и использование памяти
+Найди большие файлы и покажи uptime системы
+
+
+
+
+
+
+
+
+
+
